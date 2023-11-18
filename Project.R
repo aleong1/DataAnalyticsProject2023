@@ -4,8 +4,10 @@ library(tidyr)
 library(ggplot2)
 library(cluster)
 library(factoextra)
+library(rpart)
+library(rpart.plot)
 
-setwd("C:/Users/AlexiaLeong.ALEXIARPI/OneDrive/Documents/Data Analytics")
+setwd("C:/Users/AlexiaLeong.ALEXIARPI/OneDrive/Documents/Data Analytics/DataAnalyticsProject2023")
 
 literacy <- read.csv("YouthLiteracyRate.csv", check.names=FALSE)
 wdi <- read.csv("WorldDevelopmentIndicators.csv", check.names=FALSE)
@@ -158,3 +160,112 @@ fviz_silhouette(silhouette_scores)
 
 #Cluster sizes:
 table(kmeans_model$cluster)
+#-------------------------Linear Regression on Each Cluster-------------------------
+# Select data for upcoming models
+clusterDataRegression <- clusterData %>% select(`Reference Area`, `Sex`, `Age group`,
+                                      `Observation Value`
+                          , `GDP (current US$) [NY.GDP.MKTP.CD]`
+                          , `GDP per capita (current US$) [NY.GDP.PCAP.CD]`
+                          , `School enrollment, secondary (% gross) [SE.SEC.ENRR]`
+                          , `Government expenditure on education, total (% of government expenditure) [SE.XPD.TOTL.GB.ZS]`
+                          , `Cluster`)
+
+colnames(clusterDataRegression) <- c("ReferenceArea", "Sex", "AgeGroup", "ObservationValue",
+                                     "GDP", "GDPperCapita", "SchoolEnrollment",
+                                     "GovernmentExpenditure", "Cluster")
+
+View(clusterDataRegression)
+clusterDataRegression <- na.omit(clusterDataRegression)
+View(clusterDataRegression)
+
+# Split by cluster:
+cluster1 <- clusterDataRegression[clusterDataRegression$Cluster == 1,]
+View(cluster1)
+
+cluster2 <- clusterDataRegression[clusterDataRegression$Cluster == 2,]
+View(cluster2)
+
+# Linear Regression:
+cluster1_regression <- lm(ObservationValue ~ GDP + GDPperCapita + SchoolEnrollment + GovernmentExpenditure, data = cluster1)
+summary(cluster1_regression)
+
+#Plotting each predictor variable:
+plot(ObservationValue ~ GDP, data = cluster1,
+     xlab = "GDP (US$)", ylab = "Literacy Rate",
+     main = "C1: GDP Scatter Plot with Regression Line")
+
+#Adding regression line:
+abline(lm(ObservationValue ~ GDP, data = cluster1), col = "red")
+
+plot(ObservationValue ~ GDPperCapita, data = cluster1,
+     xlab = "GDP per Capita (US$)", ylab = "Literacy Rate",
+     main = "C1: GDP per Capita Scatter Plot with Regression Line")
+
+abline(lm(ObservationValue ~ GDPperCapita, data = cluster1), col = "red")
+
+plot(ObservationValue ~ SchoolEnrollment, data = cluster1,
+     xlab = "School Enrollment", ylab = "Literacy Rate",
+     main = "C1: School Enrollment Scatter Plot with Regression Line")
+
+abline(lm(ObservationValue ~ SchoolEnrollment, data = cluster1), col = "red")
+
+plot(ObservationValue ~ GovernmentExpenditure, data = cluster1,
+     xlab = "Government Expenditure (US$)", ylab = "Literacy Rate",
+     main = "C1: Government Expenditure Scatter Plot with Regression Line")
+
+abline(lm(ObservationValue ~ GovernmentExpenditure, data = cluster1), col = "red")
+
+#Cluster 2:
+cluster2_regression <- lm(ObservationValue ~ GDP + GDPperCapita + SchoolEnrollment + GovernmentExpenditure, data = cluster2)
+summary(cluster2_regression)
+
+#Plotting each predictor variable:
+plot(ObservationValue ~ GDP, data = cluster2,
+     xlab = "GDP (US$)", ylab = "Literacy Rate",
+     main = "C2: GDP Scatter Plot with Regression Line")
+
+#Adding regression line:
+abline(lm(ObservationValue ~ GDP, data = cluster2), col = "red")
+
+plot(ObservationValue ~ GDPperCapita, data = cluster2,
+     xlab = "GDP per Capita (US$)", ylab = "Literacy Rate",
+     main = "C2: GDP per Capita Scatter Plot with Regression Line")
+
+abline(lm(ObservationValue ~ GDPperCapita, data = cluster2), col = "red")
+
+plot(ObservationValue ~ SchoolEnrollment, data = cluster2,
+     xlab = "School Enrollment", ylab = "Literacy Rate",
+     main = "C2: School Enrollment Scatter Plot with Regression Line")
+
+abline(lm(ObservationValue ~ SchoolEnrollment, data = cluster2), col = "red")
+
+plot(ObservationValue ~ GovernmentExpenditure, data = cluster2,
+     xlab = "Government Expenditure (US$)", ylab = "Literacy Rate",
+     main = "C2: Government Expenditure Scatter Plot with Regression Line")
+
+abline(lm(ObservationValue ~ GovernmentExpenditure, data = cluster2), col = "red")
+
+#------------------------------Decision Tree--------------------------------
+#Cluster 1
+
+dtree1 <- rpart(ObservationValue ~ GDP + GDPperCapita + SchoolEnrollment + GovernmentExpenditure, 
+                    data = cluster1)
+
+summary(dtree1)
+rpart.plot(dtree1, main = "Cluster 1 Decision Tree")
+
+#Predictions:
+#set.seed(12)
+
+#splitIndex <- sample(1:nrow(cluster1), 0.8 * nrow(cluster1))
+
+#trainData <- cluster1[split_index, ]
+#dtree1 <- rpart(ObservationValue ~ GDP + GDPperCapita + SchoolEnrollment + GovernmentExpenditure, 
+                data = trainData)
+
+#summary(dtree1)
+#rpart.plot(dtree1, main = "Cluster 1 Decision Tree")
+
+#testData <- cluster1[-split_index, ]
+
+#predictions <- predict(dtree1, newdata = testData)
