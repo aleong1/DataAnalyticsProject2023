@@ -177,7 +177,9 @@ fviz_silhouette(silhouette_scores)
 
 #Cluster sizes:
 table(kmeans_model$cluster)
+
 #-------------------------Linear Regression on Each Cluster-------------------------
+
 # Select data for upcoming models
 clusterDataRegression <- clusterData %>% select(`Reference Area`, `Sex`, `Age group`,
                                       `Observation Value`
