@@ -74,6 +74,22 @@ plot(data2010Male$`GDP per capita (current US$) [NY.GDP.PCAP.CD]`, data2010Male$
 plot(data2010Female$`GDP per capita (current US$) [NY.GDP.PCAP.CD]`, data2010Female$`Observation Value`, main="2010s Female",
      xlab="GDP Per Capita ", ylab="Literacy Rate ", pch=19)
 
+plot(combinedData$`Observation Value` ~ combinedData$`GDP (current US$) [NY.GDP.MKTP.CD]`, data = combinedData,
+     xlab = "GDP (US$)", ylab = "Literacy Rate",
+     main = "GDP Scatter Plot")
+
+plot(combinedData$`Observation Value` ~ combinedData$`GDP per capita (current US$) [NY.GDP.PCAP.CD]`, data = combinedData,
+     xlab = "GDP per Capita (US$)", ylab = "Literacy Rate",
+     main = "GDP per Capita Scatter Plot")
+
+plot(combinedData$`Observation Value` ~ combinedData$`School enrollment, secondary (% gross) [SE.SEC.ENRR]`, data = combinedData,
+     xlab = "School Enrollment Rate", ylab = "Literacy Rate",
+     main = "School Enrollment Scatter Plot")
+
+plot(combinedData$`Observation Value` ~ combinedData$`Government expenditure on education, total (% of government expenditure) [SE.XPD.TOTL.GB.ZS]`, data = combinedData,
+     xlab = "Government Expenditure %", ylab = "Literacy Rate",
+     main = "Government Expenditure Scatter Plot")
+
 #------Year aggregation: Keep years from 2000-2015 with countries with at least 5 entries---------
 data2000Beyond <- combinedData[combinedData$`Time Period` >= 2000,]
 View(data2000Beyond)
