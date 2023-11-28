@@ -290,6 +290,24 @@ dtree1 <- rpart(ObservationValue ~ GDP + GDPperCapita + SchoolEnrollment + Gover
 summary(dtree1)
 rpart.plot(dtree1, main = "Cluster 1 Decision Tree")
 
+set.seed(100)
+
+splitIndex <- sample(1:nrow(cluster1), 0.8 * nrow(cluster1))
+
+trainData <- cluster1[splitIndex, ]
+dtree1 <- rpart(ObservationValue ~ GDP + GDPperCapita + SchoolEnrollment + GovernmentExpenditure, 
+data = trainData)
+
+summary(dtree1)
+rpart.plot(dtree1, main = "Cluster 1 Decision Tree")
+
+testData <- cluster1[-splitIndex, ]
+predictions <- predict(dtree1, cluster1)
+print(predictions)
+
+table <- table(cluster1$ObservationValue, predictions)
+table
+
 #Cluster 2
 
 dtree2 <- rpart(ObservationValue ~ GDP + GDPperCapita + SchoolEnrollment + GovernmentExpenditure, 
@@ -298,18 +316,4 @@ dtree2 <- rpart(ObservationValue ~ GDP + GDPperCapita + SchoolEnrollment + Gover
 summary(dtree2)
 rpart.plot(dtree1, main = "Cluster 2 Decision Tree")
 
-#Predictions:
-#set.seed(12)
-
-#splitIndex <- sample(1:nrow(cluster1), 0.8 * nrow(cluster1))
-
-#trainData <- cluster1[split_index, ]
-#dtree1 <- rpart(ObservationValue ~ GDP + GDPperCapita + SchoolEnrollment + GovernmentExpenditure, 
-                data = trainData)
-
-#summary(dtree1)
-#rpart.plot(dtree1, main = "Cluster 1 Decision Tree")
-
-#testData <- cluster1[-split_index, ]
-
-#predictions <- predict(dtree1, newdata = testData)
+#------------------------------Random Forest--------------------------------
