@@ -231,6 +231,16 @@ plot(ObservationValue ~ GovernmentExpenditure, data = cluster1,
 
 abline(lm(ObservationValue ~ GovernmentExpenditure, data = cluster1), col = "red")
 
+#Training and predicting
+set.seed(100)
+trainingRowIndex <- sample(1:nrow(cluster1), 0.8*nrow(cluster1))
+trainingData <- cluster1[trainingRowIndex, ]
+testData  <- cluster1[-trainingRowIndex,]
+
+predlm1 <- lm(ObservationValue ~ GDP + GDPperCapita + SchoolEnrollment + GovernmentExpenditure, data = trainingData)
+predictions <- predict(predlm1, testData)  # predict
+summary(predlm1)
+
 #Cluster 2:
 cluster2_regression <- lm(ObservationValue ~ GDP + GDPperCapita + SchoolEnrollment + GovernmentExpenditure, data = cluster2)
 summary(cluster2_regression)
@@ -261,6 +271,16 @@ plot(ObservationValue ~ GovernmentExpenditure, data = cluster2,
 
 abline(lm(ObservationValue ~ GovernmentExpenditure, data = cluster2), col = "red")
 
+#Training and predicting
+set.seed(100)
+trainingRowIndex <- sample(1:nrow(cluster2), 0.8*nrow(cluster2))
+trainingData <- cluster2[trainingRowIndex, ]
+testData  <- cluster2[-trainingRowIndex,]
+
+predlm2 <- lm(ObservationValue ~ GDP + GDPperCapita + SchoolEnrollment + GovernmentExpenditure, data = trainingData)
+predictions <- predict(predlm2, testData)  # predict
+summary(predlm2)
+
 #------------------------------Decision Tree--------------------------------
 #Cluster 1
 
@@ -269,6 +289,14 @@ dtree1 <- rpart(ObservationValue ~ GDP + GDPperCapita + SchoolEnrollment + Gover
 
 summary(dtree1)
 rpart.plot(dtree1, main = "Cluster 1 Decision Tree")
+
+#Cluster 2
+
+dtree2 <- rpart(ObservationValue ~ GDP + GDPperCapita + SchoolEnrollment + GovernmentExpenditure, 
+                data = cluster2)
+
+summary(dtree2)
+rpart.plot(dtree1, main = "Cluster 2 Decision Tree")
 
 #Predictions:
 #set.seed(12)
