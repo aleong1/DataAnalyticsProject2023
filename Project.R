@@ -6,6 +6,7 @@ library(cluster)
 library(factoextra)
 library(rpart)
 library(rpart.plot)
+library(randomForest)
 
 setwd("C:/Users/AlexiaLeong.ALEXIARPI/OneDrive/Documents/Data Analytics/DataAnalyticsProject2023")
 
@@ -317,3 +318,52 @@ summary(dtree2)
 rpart.plot(dtree1, main = "Cluster 2 Decision Tree")
 
 #------------------------------Random Forest--------------------------------
+#Cluster 1
+set.seed(100)
+rf1 <- randomForest(ObservationValue ~ GDP + GDPperCapita + SchoolEnrollment + GovernmentExpenditure
+                    , data=cluster1, ntree=500,importance=TRUE)
+rf1
+varImpPlot(rf1)
+varImportance1 <- importance(rf1)
+print(varImportance1)
+
+splitIndex <- sample(1:nrow(cluster1), 0.8 * nrow(cluster1))
+trainData <- cluster1[splitIndex, ]
+testData  <- cluster1[-splitIndex,]
+rtree1 <- randomForest(ObservationValue ~ GDP + GDPperCapita + SchoolEnrollment + GovernmentExpenditure, 
+                data = trainData)
+
+predictions <- predict(rtree1, newdata = testData)
+
+plotData <- data.frame(Actual = testData$ObservationValue, Predicted = predictions)
+
+plot(plotData$Actual, plotData$Predicted, 
+     xlab = "Actual Values", ylab = "Predicted Values",
+     main = "C1: Predicted vs Actual Values")
+
+abline(0, 1, col = "red")
+
+#Cluster 2
+set.seed(100)
+rf2 <- randomForest(ObservationValue ~ GDP + GDPperCapita + SchoolEnrollment + GovernmentExpenditure
+                    , data=cluster2, ntree=500,importance=TRUE)
+rf2
+varImpPlot(rf2)
+varImportance2 <- importance(rf2)
+print(varImportance2)
+
+splitIndex <- sample(1:nrow(cluster2), 0.8 * nrow(cluster2))
+trainData <- cluster2[splitIndex, ]
+testData  <- cluster2[-splitIndex,]
+rtree2 <- randomForest(ObservationValue ~ GDP + GDPperCapita + SchoolEnrollment + GovernmentExpenditure, 
+                       data = trainData)
+
+predictions <- predict(rtree2, newdata = testData)
+
+plotData <- data.frame(Actual = testData$ObservationValue, Predicted = predictions)
+
+plot(plotData$Actual, plotData$Predicted, 
+     xlab = "Actual Values", ylab = "Predicted Values",
+     main = "C2: Predicted vs Actual Values")
+
+abline(0, 1, col = "red")
