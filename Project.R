@@ -244,6 +244,12 @@ predlm1 <- lm(ObservationValue ~ GDP + GDPperCapita + SchoolEnrollment + Governm
 predictions <- predict(predlm1, testData)  # predict
 summary(predlm1)
 
+plot(testData$ObservationValue, predictions, 
+     xlab = "Actual Values", ylab = "Predicted Values",
+     main = "C1: Predicted vs Actual Values")
+
+abline(0, 1, col = "red")
+
 #Cluster 2:
 cluster2_regression <- lm(ObservationValue ~ GDP + GDPperCapita + SchoolEnrollment + GovernmentExpenditure, data = cluster2)
 summary(cluster2_regression)
@@ -283,6 +289,12 @@ testData  <- cluster2[-trainingRowIndex,]
 predlm2 <- lm(ObservationValue ~ GDP + GDPperCapita + SchoolEnrollment + GovernmentExpenditure, data = trainingData)
 predictions <- predict(predlm2, testData)  # predict
 summary(predlm2)
+
+plot(testData$ObservationValue, predictions, 
+     xlab = "Actual Values", ylab = "Predicted Values",
+     main = "C2: Predicted vs Actual Values")
+
+abline(0, 1, col = "red")
 
 #------------------------------Decision Tree--------------------------------
 #Cluster 1
