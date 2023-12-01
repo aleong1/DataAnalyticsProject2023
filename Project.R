@@ -125,7 +125,6 @@ data2000BeyondAG <- data2000BeyondAG %>%
 View(data2000BeyondAG)
 
 #-------------------------KMeans Clustering--------------------------------------
-
 literacyRatesandGDP <- data2000BeyondAG %>% select(`Observation Value`
                                                    , `GDP (current US$) [NY.GDP.MKTP.CD]`)
 
@@ -320,8 +319,16 @@ testData <- cluster1[-splitIndex, ]
 predictions <- predict(dtree1, cluster1)
 print(predictions)
 
-table <- table(cluster1$ObservationValue, predictions)
-table
+library(Metrics)
+RMSE = sqrt(sum((testData$ObservationValue - predictions)^2) / length(predictions))
+MSE = sum((testData$ObservationValue - predictions)^2) / length(predictions)
+MAPE = mean(abs((testData$ObservationValue-predictions)/testData$ObservationValue)) * 100
+MAE = mae(testData$ObservationValue,predictions)
+
+RMSE
+MSE
+MAPE
+MAE
 
 #Cluster 2
 
@@ -329,7 +336,32 @@ dtree2 <- rpart(ObservationValue ~ GDP + GDPperCapita + SchoolEnrollment + Gover
                 data = cluster2)
 
 summary(dtree2)
-rpart.plot(dtree1, main = "Cluster 2 Decision Tree")
+rpart.plot(dtree2, main = "Cluster 2 Decision Tree")
+
+set.seed(100)
+
+splitIndex <- sample(1:nrow(cluster2), 0.8 * nrow(cluster2))
+
+trainData <- cluster2[splitIndex, ]
+dtree2 <- rpart(ObservationValue ~ GDP + GDPperCapita + SchoolEnrollment + GovernmentExpenditure, 
+                data = trainData)
+
+summary(dtree2)
+rpart.plot(dtree2, main = "Cluster 2 Decision Tree")
+
+testData <- cluster2[-splitIndex, ]
+predictions <- predict(dtree2, cluster2)
+print(predictions)
+
+RMSE = sqrt(sum((testData$ObservationValue - predictions)^2) / length(predictions))
+MSE = sum((testData$ObservationValue - predictions)^2) / length(predictions)
+MAPE = mean(abs((testData$ObservationValue-predictions)/testData$ObservationValue)) * 100
+MAE = mae(testData$ObservationValue,predictions)
+
+RMSE
+MSE
+MAPE
+MAE
 
 #------------------------------Random Forest--------------------------------
 #Cluster 1
