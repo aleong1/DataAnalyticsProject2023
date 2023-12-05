@@ -37,7 +37,11 @@ attach(combinedData)
 boxplot(`Observation Value`)
 
 summary(`Observation Value`)
-hist(`Observation Value`)
+hist(`Observation Value`, xlab = "Literacy Rate", main = "Histogram of Literacy Rates")
+hist(combinedData$`School enrollment, secondary (% gross) [SE.SEC.ENRR]`, xlab = "School Enrollment Rate", main = "Histogram of Secondary School Enrollment")
+hist(combinedData$`Government expenditure on education, total (% of government expenditure) [SE.XPD.TOTL.GB.ZS]`,  xlab = "% Gov't Expenditure", main = "Histogram of Government Expenditure")
+hist(combinedData$`GDP (current US$) [NY.GDP.MKTP.CD]`, xlab = "GDP (US$)", main = "Histogram of GDPs")
+hist(combinedData$`GDP per capita (current US$) [NY.GDP.PCAP.CD]`, xlab = "GDP per Capita (US$)", main = "Histogram of GDP per Capita")
 
 data1980 <- combinedData[combinedData$`Time Period` == 1980,]
 hist(data1980$`Observation Value`,  ylim=c(0,100), main = "Histogram of 1980s Literacy Rates")
